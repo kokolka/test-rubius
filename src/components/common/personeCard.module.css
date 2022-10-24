@@ -1,0 +1,22 @@
+.main_box{
+    display: grid;
+
+    grid-template-columns: 200px 200px 200px 200px;
+    column-gap: 0;
+
+    justify-content: center;
+}
+.box_element{
+    padding: 10px;
+
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    border-left: 1px solid black;
+}
+.box_button{
+    display: flex;
+
+    border: 1px solid black;
+
+    justify-content: space-evenly;
+}
