@@ -9,13 +9,13 @@ const AddPersone = (props) => {
         <div>
             <h1>Создание пользователя</h1>
             <Formik
-                initialValues={{ firstName: '', lastName: '', middleName: '', organisationId: null, email: '' }}
+                initialValues={{ firstName: '', lastName: '', middleName: '', organisationId: 'no', email: '' }}
                 validate={values => {
                     const errors = {};
                     if(!values.firstName){
                         errors.firstName = 'Обязательно';
                     }else if (
-                        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.firstName)
+                        !/^[А-ЯЁA-Z]|[А-ЯЁA-Z][\x27а-яёa-z]{1,}$/i.test(values.firstName)
                     ) {
                         errors.firstName = 'Некорректная запись фамилии';
                     }
@@ -23,13 +23,13 @@ const AddPersone = (props) => {
                     if(!values.lastName){
                         errors.lastName = 'Обязательно';
                     }else if (
-                        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.lastName)
+                        !/^[А-ЯЁA-Z]|[А-ЯЁA-Z][\x27а-яёa-z]{1,}$/i.test(values.lastName)
                     ) {
                         errors.lastName = 'Некорректная запись имени';
                     }
 
                     if(
-                        !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.middleName)
+                        !/^([А-ЯЁA-Z]|[А-ЯЁA-Z][\x27а-яёa-z]{1,}$)|()/i.test(values.middleName)
                     ) {
                         errors.middleName = 'Некорректная запись отчества';
                     }
@@ -44,10 +44,8 @@ const AddPersone = (props) => {
                     return errors;
                 }}
                 onSubmit={(values, { setSubmitting }) => {
-                    setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
-                        setSubmitting(false);
-                    }, 400);
+                    props.addPersone(values);
+                    props.resetCard();
                 }}
             >
                 {(p) => (
@@ -85,10 +83,9 @@ const AddPersone = (props) => {
                             </div>
                             <div>
                                 <select disabled name="organisationId" value={p.values.organisationId} onChange={p.handleChange} onBlur={p.handleBlur}>
-                                    <option disabled> </option>
                                     {organisationsData.map(el => {
                                         return(
-                                            <option value={el.id}>{`${el.fullName} (${el.shortName})`}</option>
+                                            <option key={el.id} value={el.id}>{`${el.fullName} (${el.shortName})`}</option>
                                         )
                                     })}
                                 </select>
@@ -105,7 +102,7 @@ const AddPersone = (props) => {
                             </div>
                         </div>
                         <div>
-                            <button type="submit" disabled={p.isSubmitting}>
+                            <button type="submit" >
                                 Ок
                             </button>
                             <button onClick={() => { props.resetCard() }}>

@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AddPersone from '../add-persone/addPersone';
 import PersoneCard from '../common/personeCard';
 import s from './tableOfPersone.module.css';
 
 import { setIsAddPersone, resetIsAddPersone } from '../../store/appState';
+import { addPersoneAC } from '../../store/users';
 
 const TableOfPersone = (props) => {
-    const appStateData = useSelector((state) => state.appState)
-    const usersData = useSelector((state) => state.users.users.users)
-    const organisationsData = useSelector((state) => state.organisations.organisations.organisations)
+    const appStateData = useSelector((state) => state.appState);
+    const usersData = useSelector((state) => state.users.users);
+    const organisationsData = useSelector((state) => state.organisations.organisations.organisations);
 
+    console.log(usersData)
+    console.log('usersData')
     const dispatch = useDispatch();
+
+    useEffect(()=>{}, [usersData])
 
     return (
         <div>
@@ -31,9 +36,9 @@ const TableOfPersone = (props) => {
             </div>
             {usersData.map(el => {
                 let OrgShortName;
-                if(el.organisationId == null){
+                if (el.organisationId === 'no') {
                     OrgShortName = ''; //после создания карточки id компании небудет
-                }else {
+                } else {
                     OrgShortName = organisationsData[el.organisationId - 1].shortName;
                 }
 
@@ -48,11 +53,16 @@ const TableOfPersone = (props) => {
                 Добавить пользователя
             </div>
             {
-                appStateData.isAddPersone === false 
-                ? null 
-                : <AddPersone resetCard={() => dispatch(resetIsAddPersone())}/>
+                appStateData.isAddPersone === false
+                    ? null
+                    : <AddPersone
+                        resetCard={() => dispatch(resetIsAddPersone())}
+                        addPersone={(data) => {
+                            dispatch(addPersoneAC(data))
+                        }}
+                    />
             }
-            
+
         </div>
     )
 }
