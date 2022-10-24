@@ -21,6 +21,9 @@ export const userSlice = createSlice({
       state.users = [...state.users, dataPersone];
     },
     changeParsoneAC: (state, action) =>{
+      debugger
+      console.log(action)
+      debugger
       let dataPersone = {
         id: action.payload.id,
         firstName: action.payload.firstName,

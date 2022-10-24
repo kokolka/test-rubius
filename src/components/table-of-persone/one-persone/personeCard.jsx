@@ -14,7 +14,7 @@ const PersoneCard = (props) =>{
                 {`${props.email}`}
             </div>
             <div className={s.box_button}>
-                <div>
+                <div onClick={() => {props.changeCard()}}>
                     Change card
                 </div>
                 <div onClick={() => {props.deletCard()}}>

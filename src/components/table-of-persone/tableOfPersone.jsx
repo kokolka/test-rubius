@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import AddPersone from '../add-persone/addPersone';
+import AddOrChangePersone from '../add-or-change-persone/addOrChangePersone';
 import PersoneCard from './one-persone/personeCard';
 import s from './tableOfPersone.module.css';
 
@@ -14,6 +14,14 @@ import DeleteWindows from '../delete-windows/deleteWindows';
 
 const TableOfPersone = (props) => {
     let [deleteId, setDeleteId] = useState(null);
+    let [changeData, setChangeData] = useState({
+        id: '',
+        firstName: '',
+        lastName: '',
+        middleName: '',
+        organisationId: '',
+        email: ''
+    });
 
     const appStateData = useSelector((state) => state.appState);
     const usersData = useSelector((state) => state.users.users);
@@ -21,8 +29,8 @@ const TableOfPersone = (props) => {
 
     console.log(usersData)
     console.log('usersData')
-    console.log(deleteId)
-    console.log('deleteId')
+    console.log(changeData)
+    console.log('changeData')
     const dispatch = useDispatch();
 
     useEffect(() => { }, [usersData]);
@@ -48,6 +56,12 @@ const TableOfPersone = (props) => {
                 if (el.organisationId === 'no') {
                     OrgShortName = ''; //после создания карточки id компании небудет
                 } else {
+                    let nomberId;
+                    if(typeof el.organisationId !== 'number'){
+                        nomberId = Number(el.organisationId);
+                    }else{
+                        nomberId = el.organisationId;
+                    }
                     OrgShortName = organisationsData[el.organisationId - 1].shortName;
                 }
 
@@ -59,6 +73,17 @@ const TableOfPersone = (props) => {
                         deletCard={() => {
                             dispatch(setIsDeletePersone())
                             setDeleteId(el.id)
+                        }}
+                        changeCard={() => {
+                            dispatch(setIsChangePersone())
+                            setChangeData({
+                                id: el.id,
+                                firstName: el.firstName, 
+                                lastName: el.lastName,
+                                middleName: el.middleName,
+                                organisationId: el.organisationId,
+                                email: el.email
+                            })
                         }}
                     />
                 )
@@ -82,29 +107,41 @@ const TableOfPersone = (props) => {
             {
                 appStateData.isChangePersone === false
                     ? null
-                    : <DeleteWindows
-                        DeleteAction={() => {
-                            dispatch(deletePersoneAC(deleteId));
-                            dispatch(resetIsDeletePersone());
+                    : <AddOrChangePersone
+                        // visibilitySetting если true, то селектор не работает
+                        visibilitySetting={false}
+                        title={'Изменение данных пользователя'}
+                        //organisationId присваивается no в случае регистрации
+                        organisationId={changeData.organisationId}
+                        firstName={changeData.firstName} lastName={changeData.lastName} 
+                        middleName={changeData.middleName} email={changeData.email}
+                        id={changeData.id}
+                        resetCard={() => {
+                            dispatch(resetIsChangePersone())
                         }}
-                        resetStateDelete={() => {
-                            dispatch(resetIsDeletePersone())
+                        addOrChangePersone={(data) => {
+                            dispatch(changeParsoneAC(data))
                         }}
                     />
             }
             {
                 appStateData.isAddPersone === false
                     ? null
-                    : <AddPersone
+                    : <AddOrChangePersone
+                        // visibilitySetting если true, то селектор не работает
+                        visibilitySetting={true}
+                        title={'Создание пользователя'}
+                        //organisationId присваивается no в случае регистрации
+                        organisationId={'no'}
+                        firstName={''} lastName={''} middleName={''} email={''} id={''}
                         resetCard={() => {
                             dispatch(resetIsAddPersone())
                         }}
-                        addPersone={(data) => {
+                        addOrChangePersone={(data) => {
                             dispatch(addPersoneAC(data))
                         }}
                     />
             }
-
         </div>
     )
 }

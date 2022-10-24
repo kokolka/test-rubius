@@ -2,14 +2,17 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 
-const AddPersone = (props) => {
+const AddOrChangePersone = (props) => {
     const organisationsData = useSelector((state) => state.organisations.organisations.organisations)
 
     return (
         <div>
-            <h1>Создание пользователя</h1>
+            <h1>{props.title}</h1>
             <Formik
-                initialValues={{ firstName: '', lastName: '', middleName: '', organisationId: 'no', email: '' }}
+                initialValues={{ 
+                    firstName: props.firstName, lastName: props.lastName, 
+                    middleName: props.middleName, organisationId: props.organisationId, 
+                    email: props.email, id: props.id }}
                 validate={values => {
                     const errors = {};
                     if(!values.firstName){
@@ -43,8 +46,8 @@ const AddPersone = (props) => {
                     }
                     return errors;
                 }}
-                onSubmit={(values, { setSubmitting }) => {
-                    props.addPersone(values);
+                onSubmit={(values) => {
+                    props.addOrChangePersone(values);
                     props.resetCard();
                 }}
             >
@@ -82,7 +85,7 @@ const AddPersone = (props) => {
                                 Организация:
                             </div>
                             <div>
-                                <select disabled name="organisationId" value={p.values.organisationId} onChange={p.handleChange} onBlur={p.handleBlur}>
+                                <select disabled={props.visibilitySetting} name="organisationId" value={p.values.organisationId} onChange={p.handleChange} onBlur={p.handleBlur}>
                                     {organisationsData.map(el => {
                                         return(
                                             <option key={el.id} value={el.id}>{`${el.fullName} (${el.shortName})`}</option>
@@ -116,4 +119,4 @@ const AddPersone = (props) => {
     )
 }
 
-export default AddPersone;
+export default AddOrChangePersone;
