@@ -11,7 +11,7 @@ export const userSlice = createSlice({
   reducers: {
     addPersoneAC: (state, action) =>{
       let dataPersone = {
-        id: state.users.length + 1,
+        id: state.users[state.users.length - 1].id + 1,
         firstName: action.payload.firstName,
         lastName: action.payload.lastName,
         middleName: action.payload.middleName,
@@ -21,10 +21,22 @@ export const userSlice = createSlice({
       state.users = [...state.users, dataPersone];
     },
     changeParsoneAC: (state, action) =>{
-
+      let dataPersone = {
+        id: action.payload.id,
+        firstName: action.payload.firstName,
+        lastName: action.payload.lastName,
+        middleName: action.payload.middleName,
+        organisationId: action.payload.organisationId,
+        email: action.payload.email
+      };
+      state.users[action.payload.id-1] = dataPersone;
     },
     deletePersoneAC: (state, action) => {
-
+      state.users = state.users.filter((el) => {
+        if(el.id !== action.payload){
+          return el;
+        }
+      });
     }
   },
 });

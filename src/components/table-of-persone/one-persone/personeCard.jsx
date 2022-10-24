@@ -17,7 +17,7 @@ const PersoneCard = (props) =>{
                 <div>
                     Change card
                 </div>
-                <div>
+                <div onClick={() => {props.deletCard()}}>
                     Delete card
                 </div>
             </div>

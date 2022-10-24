@@ -1,22 +1,31 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import AddPersone from '../add-persone/addPersone';
-import PersoneCard from '../common/personeCard';
+import PersoneCard from './one-persone/personeCard';
 import s from './tableOfPersone.module.css';
 
-import { setIsAddPersone, resetIsAddPersone } from '../../store/appState';
-import { addPersoneAC } from '../../store/users';
+import {
+    setIsAddPersone, resetIsAddPersone,
+    setIsDeletePersone, resetIsDeletePersone,
+    setIsChangePersone, resetIsChangePersone
+} from '../../store/appState';
+import { addPersoneAC, changeParsoneAC, deletePersoneAC } from '../../store/users';
+import DeleteWindows from '../delete-windows/deleteWindows';
 
 const TableOfPersone = (props) => {
+    let [deleteId, setDeleteId] = useState(null);
+
     const appStateData = useSelector((state) => state.appState);
     const usersData = useSelector((state) => state.users.users);
     const organisationsData = useSelector((state) => state.organisations.organisations.organisations);
 
     console.log(usersData)
     console.log('usersData')
+    console.log(deleteId)
+    console.log('deleteId')
     const dispatch = useDispatch();
 
-    useEffect(()=>{}, [usersData])
+    useEffect(() => { }, [usersData]);
 
     return (
         <div>
@@ -43,9 +52,14 @@ const TableOfPersone = (props) => {
                 }
 
                 return (
-                    <PersoneCard key={el.firstName}
+                    <PersoneCard
+                        key={el.firstName}
                         firstName={el.firstName} lastName={el.lastName} middleName={el.middleName}
                         OrgShortName={OrgShortName} email={el.email}
+                        deletCard={() => {
+                            dispatch(setIsDeletePersone())
+                            setDeleteId(el.id)
+                        }}
                     />
                 )
             })}
@@ -53,10 +67,38 @@ const TableOfPersone = (props) => {
                 Добавить пользователя
             </div>
             {
+                appStateData.isDeletePersone === false
+                    ? null
+                    : <DeleteWindows
+                        DeleteAction={() => {
+                            dispatch(deletePersoneAC(deleteId));
+                            dispatch(resetIsDeletePersone());
+                        }}
+                        resetStateDelete={() => {
+                            dispatch(resetIsDeletePersone())
+                        }}
+                    />
+            }
+            {
+                appStateData.isChangePersone === false
+                    ? null
+                    : <DeleteWindows
+                        DeleteAction={() => {
+                            dispatch(deletePersoneAC(deleteId));
+                            dispatch(resetIsDeletePersone());
+                        }}
+                        resetStateDelete={() => {
+                            dispatch(resetIsDeletePersone())
+                        }}
+                    />
+            }
+            {
                 appStateData.isAddPersone === false
                     ? null
                     : <AddPersone
-                        resetCard={() => dispatch(resetIsAddPersone())}
+                        resetCard={() => {
+                            dispatch(resetIsAddPersone())
+                        }}
                         addPersone={(data) => {
                             dispatch(addPersoneAC(data))
                         }}
