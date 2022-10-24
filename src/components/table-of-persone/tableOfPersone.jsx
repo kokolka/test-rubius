@@ -11,6 +11,7 @@ import {
 } from '../../store/appState';
 import { addPersoneAC, changeParsoneAC, deletePersoneAC } from '../../store/users';
 import DeleteWindows from '../delete-windows/deleteWindows';
+import Paginator from '../common/paginator';
 
 const TableOfPersone = (props) => {
     let [deleteId, setDeleteId] = useState(null);
@@ -22,6 +23,7 @@ const TableOfPersone = (props) => {
         organisationId: '',
         email: ''
     });
+    let [numberPage, setNumberPage] = useState(1);
 
     const appStateData = useSelector((state) => state.appState);
     const usersData = useSelector((state) => state.users.users);
@@ -31,9 +33,58 @@ const TableOfPersone = (props) => {
     console.log('usersData')
     console.log(changeData)
     console.log('changeData')
+
+
     const dispatch = useDispatch();
 
     useEffect(() => { }, [usersData]);
+
+    let amountPage = Math.ceil(usersData.length / 10); //число страниц в паджинаторе
+
+    let cardsPersons = usersData.map(el => {        
+        let OrgShortName;
+        if (el.organisationId === 'no') {
+            OrgShortName = ''; //после создания карточки id компании небудет
+        } else {
+            let nomberId;
+            if (typeof el.organisationId !== 'number') {
+                nomberId = Number(el.organisationId);
+            } else {
+                nomberId = el.organisationId;
+            }
+            OrgShortName = organisationsData[nomberId - 1].shortName;
+        }
+        return (
+            <PersoneCard
+                key={el.firstName}
+                firstName={el.firstName} lastName={el.lastName} middleName={el.middleName}
+                OrgShortName={OrgShortName} email={el.email}
+                deletCard={() => {
+                    dispatch(setIsDeletePersone())
+                    setDeleteId(el.id)
+                }}
+                changeCard={() => {
+                    dispatch(setIsChangePersone())
+                    setChangeData({
+                        id: el.id,
+                        firstName: el.firstName,
+                        lastName: el.lastName,
+                        middleName: el.middleName,
+                        organisationId: el.organisationId,
+                        email: el.email
+                    })
+                }}
+            />
+        )
+    })
+
+    let cardsPersonsOnPage = []
+    for(let i = 0; i < cardsPersons.length; i ++){
+        if(i < (10 * numberPage) && i >= ((numberPage - 1) * 10)){
+            cardsPersonsOnPage.push(cardsPersons[i])
+        }
+    }
+
 
     return (
         <div>
@@ -51,43 +102,54 @@ const TableOfPersone = (props) => {
                     {''}
                 </div>
             </div>
-            {usersData.map(el => {
-                let OrgShortName;
-                if (el.organisationId === 'no') {
-                    OrgShortName = ''; //после создания карточки id компании небудет
-                } else {
-                    let nomberId;
-                    if(typeof el.organisationId !== 'number'){
-                        nomberId = Number(el.organisationId);
-                    }else{
-                        nomberId = el.organisationId;
-                    }
-                    OrgShortName = organisationsData[el.organisationId - 1].shortName;
-                }
+            {
+                cardsPersonsOnPage
+            // usersData.map(el => {
+            //     setCountPersone(countPersone + 1);
 
-                return (
-                    <PersoneCard
-                        key={el.firstName}
-                        firstName={el.firstName} lastName={el.lastName} middleName={el.middleName}
-                        OrgShortName={OrgShortName} email={el.email}
-                        deletCard={() => {
-                            dispatch(setIsDeletePersone())
-                            setDeleteId(el.id)
-                        }}
-                        changeCard={() => {
-                            dispatch(setIsChangePersone())
-                            setChangeData({
-                                id: el.id,
-                                firstName: el.firstName, 
-                                lastName: el.lastName,
-                                middleName: el.middleName,
-                                organisationId: el.organisationId,
-                                email: el.email
-                            })
-                        }}
-                    />
-                )
-            })}
+            //     let OrgShortName;
+            //     if (el.organisationId === 'no') {
+            //         OrgShortName = ''; //после создания карточки id компании небудет
+            //     } else {
+            //         let nomberId;
+            //         if (typeof el.organisationId !== 'number') {
+            //             nomberId = Number(el.organisationId);
+            //         } else {
+            //             nomberId = el.organisationId;
+            //         }
+            //         OrgShortName = organisationsData[el.organisationId - 1].shortName;
+            //     }
+            //     return (
+            //         <PersoneCard
+            //             key={el.firstName}
+            //             firstName={el.firstName} lastName={el.lastName} middleName={el.middleName}
+            //             OrgShortName={OrgShortName} email={el.email}
+            //             deletCard={() => {
+            //                 dispatch(setIsDeletePersone())
+            //                 setDeleteId(el.id)
+            //             }}
+            //             changeCard={() => {
+            //                 dispatch(setIsChangePersone())
+            //                 setChangeData({
+            //                     id: el.id,
+            //                     firstName: el.firstName,
+            //                     lastName: el.lastName,
+            //                     middleName: el.middleName,
+            //                     organisationId: el.organisationId,
+            //                     email: el.email
+            //                 })
+            //             }}
+            //         />
+            //     )
+            // })
+            }
+            <div>
+                {
+                    amountPage > 1
+                        ? <Paginator amountPage={amountPage} setNumberPage={(el) => setNumberPage(el)}/>
+                        : null
+            }
+            </div>
             <div onClick={() => dispatch(setIsAddPersone())} className={s.addPersoneButton}>
                 Добавить пользователя
             </div>
@@ -113,7 +175,7 @@ const TableOfPersone = (props) => {
                         title={'Изменение данных пользователя'}
                         //organisationId присваивается no в случае регистрации
                         organisationId={changeData.organisationId}
-                        firstName={changeData.firstName} lastName={changeData.lastName} 
+                        firstName={changeData.firstName} lastName={changeData.lastName}
                         middleName={changeData.middleName} email={changeData.email}
                         id={changeData.id}
                         resetCard={() => {
