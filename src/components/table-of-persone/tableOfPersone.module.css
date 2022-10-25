@@ -21,9 +21,19 @@
     background-color: aliceblue;
 }
 .box_button{
+
+
     border: 1px solid black;
 
     background-color: aliceblue;
+
+    display: flex;
+    justify-content: space-around;
+}
+.box_button__sel{
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
 }
 
 .addPersoneButton{

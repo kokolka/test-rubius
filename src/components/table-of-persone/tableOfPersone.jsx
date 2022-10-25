@@ -107,10 +107,9 @@ const TableOfPersone = (props) => {
                 </div>
                 <div className={s.box_button} >
                     {appStateData.isMultiDeletePersone
-                    ?<div>
+                    ?<div className={s.box_button__sel} >
                         <button onClick={() => {
                             dispatch(setIsDeletePersone());
-                            dispatch(resetIsMultiDeletePersone());
                             setDeleteId('no');
                         }}>Удалить</button>
                         <button onClick={() => {
