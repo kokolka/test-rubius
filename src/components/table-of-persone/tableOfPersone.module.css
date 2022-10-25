@@ -1,4 +1,9 @@
+.wrapper{
+    width: 100%;
+}
+
 .main_box{
+    
     display: grid;
 
     grid-template-columns: 25% 25% 25% 25%;

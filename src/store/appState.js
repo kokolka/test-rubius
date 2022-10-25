@@ -3,7 +3,8 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   isAddPersone: false,
   isChangePersone: false,
-  isDeletePersone: false
+  isDeletePersone: false,
+  isMultiDeletePersone: false
 }
 
 export const appSlice = createSlice({
@@ -22,6 +23,12 @@ export const appSlice = createSlice({
     resetIsDeletePersone: (state) => {
       state.isDeletePersone = false;
     },
+    setIsMultiDeletePersone: (state) => {
+      state.isMultiDeletePersone = true;
+    },
+    resetIsMultiDeletePersone: (state) => {
+      state.isMultiDeletePersone = false;
+    },
     setIsChangePersone: (state) => {
       state.isChangePersone = true;
     },
@@ -34,7 +41,8 @@ export const appSlice = createSlice({
 export const { 
   setIsAddPersone, resetIsAddPersone, 
   setIsDeletePersone, resetIsDeletePersone,
-  setIsChangePersone,  resetIsChangePersone
+  setIsChangePersone,  resetIsChangePersone,
+  setIsMultiDeletePersone, resetIsMultiDeletePersone
 } = appSlice.actions;
 
 export default appSlice.reducer;

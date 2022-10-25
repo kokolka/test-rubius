@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 import users from '../source-data/users.json';
 
 const initialState = {
-    users: structuredClone(users.users)
+    users: structuredClone(users.users),
+    usersOnDelete: []
 }
 
 export const userSlice = createSlice({
@@ -21,9 +22,6 @@ export const userSlice = createSlice({
       state.users = [...state.users, dataPersone];
     },
     changeParsoneAC: (state, action) =>{
-      debugger
-      console.log(action)
-      debugger
       let dataPersone = {
         id: action.payload.id,
         firstName: action.payload.firstName,
@@ -35,15 +33,34 @@ export const userSlice = createSlice({
       state.users[action.payload.id-1] = dataPersone;
     },
     deletePersoneAC: (state, action) => {
-      state.users = state.users.filter((el) => {
-        if(el.id !== action.payload){
-          return el;
-        }
-      });
+      if(action.payload !== 'no'){
+        state.users = state.users.filter((el) => {
+          if(el.id !== action.payload){
+            return el;
+          }
+        });
+      }else{
+        state.users = state.users.filter((el) => {
+          let findEl = state.usersOnDelete.filter((e) => e === el.id)
+          if(el.id !== findEl[0]){
+            return el;
+          }
+        });
+      }
+      
+    },
+    addUsersOnDelete: (state, action) => {
+      debugger
+      console.log(state.usersOnDelete)
+      debugger
+      state.usersOnDelete = [...state.usersOnDelete, action.payload]
+    },
+    reserUsersOnDelete: (state) => {
+      state.usersOnDelete = []
     }
   },
 });
 
-export const { addPersoneAC, changeParsoneAC, deletePersoneAC } = userSlice.actions;
+export const { addPersoneAC, changeParsoneAC, deletePersoneAC, addUsersOnDelete, reserUsersOnDelete } = userSlice.actions;
 
 export default userSlice.reducer;

@@ -7,9 +7,13 @@ import s from './tableOfPersone.module.css';
 import {
     setIsAddPersone, resetIsAddPersone,
     setIsDeletePersone, resetIsDeletePersone,
-    setIsChangePersone, resetIsChangePersone
+    setIsChangePersone, resetIsChangePersone,
+    setIsMultiDeletePersone, resetIsMultiDeletePersone
 } from '../../store/appState';
-import { addPersoneAC, changeParsoneAC, deletePersoneAC } from '../../store/users';
+import { 
+    addPersoneAC, changeParsoneAC, deletePersoneAC, 
+    addUsersOnDelete, reserUsersOnDelete 
+} from '../../store/users';
 import DeleteWindows from '../delete-windows/deleteWindows';
 import Paginator from '../common/paginator';
 
@@ -39,7 +43,6 @@ const TableOfPersone = (props) => {
         }
     }, [usersData]);
 
-
     let cardsPersons = usersData.map(el => {
         let OrgShortName;
         if (el.organisationId === 'no') {
@@ -55,6 +58,7 @@ const TableOfPersone = (props) => {
         }
         return (
             <PersoneCard
+                isMultiDelete={appStateData.isMultiDeletePersone}
                 key={`${el.firstName}${el.lastName}${el.middleName}${el.email}`}
                 firstName={el.firstName} lastName={el.lastName} middleName={el.middleName}
                 OrgShortName={OrgShortName} email={el.email}
@@ -73,6 +77,7 @@ const TableOfPersone = (props) => {
                         email: el.email
                     })
                 }}
+                addUsersOnDelete={() => dispatch(addUsersOnDelete(el.id))}
             />
         )
     })
@@ -80,14 +85,13 @@ const TableOfPersone = (props) => {
     let cardsPersonsOnPage = []
     for (let i = 0; i < cardsPersons.length; i++) {
         if (i < (10 * numberPage) && i >= ((numberPage - 1) * 10)) {
-            console.log(i)
-            cardsPersonsOnPage.push(cardsPersons[i])
+            //console.log(i)
+            cardsPersonsOnPage.push(cardsPersons[i]);
         }
     }
 
-
     return (
-        <div>
+        <div className={s.wrapper}>
             <button onClick={() => dispatch(setIsAddPersone())} className={s.addPersoneButton}>
                 Добавить пользователя
             </button>
@@ -101,8 +105,24 @@ const TableOfPersone = (props) => {
                 <div className={s.box_element}>
                     {`E-Mail`}
                 </div>
-                <div className={s.box_button}>
-                    {''}
+                <div className={s.box_button} >
+                    {appStateData.isMultiDeletePersone
+                    ?<div>
+                        <button onClick={() => {
+                            dispatch(setIsDeletePersone());
+                            dispatch(resetIsMultiDeletePersone());
+                            setDeleteId('no');
+                        }}>Удалить</button>
+                        <button onClick={() => {
+                            dispatch(resetIsMultiDeletePersone());
+                            dispatch(reserUsersOnDelete());
+                        }}>Отмена</button>
+                    </div>
+                    :<button onClick={() => {
+                        dispatch(setIsMultiDeletePersone())
+                    }}>
+                        Множественное удаление
+                    </button>}
                 </div>
             </div>
             {
@@ -115,7 +135,6 @@ const TableOfPersone = (props) => {
                         : null
                 }
             </div>
-
             {
                 appStateData.isDeletePersone === false
                     ? null
