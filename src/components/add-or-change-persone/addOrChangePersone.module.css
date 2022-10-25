@@ -1,0 +1,51 @@
+.mainBox{
+    position: absolute;
+
+    top: 0; left: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    background-color: rgba(250, 235, 215, 0.322);
+
+    display: grid;
+
+    justify-content: center;
+    align-items: center;
+}
+
+.formBox{
+    padding: 10px;
+    background-color: antiquewhite;
+}
+
+.formBox_title{
+    border-bottom: 1px solid black;
+}
+
+.formBox_element{
+    display: grid;
+    grid-template-columns: 120px 300px;
+
+    margin-bottom: 10px;
+}
+.element{
+    width: 90%;
+}
+.element input{
+    width: 98%;
+}
+.element select{
+    width: 100%;
+}
+
+.formBox_button{
+    margin-top: 40px;
+
+    display: grid;
+
+    grid-template-columns: 100px 100px;
+    column-gap:  50px;
+
+    justify-content: right;
+}

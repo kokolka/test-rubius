@@ -1,11 +1,22 @@
+
+
 .main_box{
     display: grid;
 
-    grid-template-columns: 200px 200px 200px 200px;
+    justify-content: center;
+}
+
+.box{
+    width: 80vw;
+
+    display: grid;
+
+    grid-template-columns: 25% 25% 25% 25%;
     column-gap: 0;
 
     justify-content: center;
 }
+
 .box_element{
     padding: 10px;
 
@@ -19,4 +30,12 @@
     border: 1px solid black;
 
     justify-content: space-evenly;
+    align-items: center;
+}
+.box_button img{
+    height: 30px;
+}
+
+.active{
+    background-color: aqua;
 }

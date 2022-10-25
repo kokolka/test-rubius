@@ -6,7 +6,7 @@ const Paginator = (props) => {
 
     for(let i = 1; i <= props.amountPage; i++){
         pagesNumbers.push(
-            <button onClick={() => props.setNumberPage(i)}>
+            <button key={i} onClick={() => props.setNumberPage(i)}>
                 {i}
             </button>
         );
